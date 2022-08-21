@@ -1,0 +1,989 @@
+    1  clear
+    2  systemctl status sshd
+    3  clear
+    4  sudo swapoff -a
+    5  sudo nano /etc/fstab 
+    6  lsmod | grep br_netfilter
+    7  modprobe br_netfilter
+    8  lsmod | grep br_netfilter
+    9  cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+   10  net.bridge.bridge-nf-call-ip6tables = 1
+   11  net.bridge.bridge-nf-call-iptables = 1
+   12  EOF
+   13  sudo sysctl --system
+   14  clear
+   15  sudo apt-get remove docker docker-engine docker.io containerd runc
+   16  sudo apt-get update
+   17  sudo apt-get install     apt-transport-https     ca-certificates     curl     gnupg-agent     software-properties-common
+   18  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+   19  sudo add-apt-repository   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   20    $(lsb_release -cs) \
+   21    stable"
+   22  sudo apt-get update
+   23  sudo apt-get install docker-ce docker-ce-cli containerd.io
+   24  docker version
+   25  cat > /etc/docker/daemon.json <<EOF
+   26  {
+   27    "exec-opts": ["native.cgroupdriver=systemd"],
+   28    "log-driver": "json-file",
+   29    "log-opts": {
+   30      "max-size": "100m"
+   31    },
+   32    "storage-driver": "overlay2"
+   33  }
+   34  EOF
+   35  clear
+   36  mkdir -p /etc/systemd/system/docker.service.d
+   37  systemctl daemon-reload
+   38  systemctl enable docker
+   39  systemctl restart docker
+   40  systemctl status docker
+   41  clear
+   42  sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+   43  sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+   44  cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+   45  deb https://apt.kubernetes.io/ kubernetes-xenial main
+   46  EOF
+   47  sudo apt-get update
+   48  sudo apt-cache policy kubeadm | grep 1.18
+   49  sudo apt-get install -y kubelet=1.18.8-00 kubeadm=1.18.8-00 kubectl=1.18.8-00
+   50  sudo apt-mark hold kubelet kubeadm kubectl
+   51  sudo timedatectl
+   52  reboot
+   53  clear
+   54  sudo apt update
+   55  apt install net-tools 
+   56  sudo apt install openssh-server 
+   57  kubectl scale deployment --replicas=10
+   58  kubectl scale deployment  deploy --replicas=10
+   59  ifconfig
+   60  kubectl get nodes
+   61  clear
+   62  cd
+   63  kubectl get nodes
+   64  kubectl get all
+   65  kubectl get pods -o wide
+   66  kubectl delete deployment nginx
+   67  kubectl delete deployment deploy
+   68  kubectl get pods -o wide
+   69  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.4.0/aio/deploy/recommended.yaml
+   70  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+   71  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.4.0/aio/deploy/recommended.yaml
+   72  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+   73  kubectl get ns
+   74  sudo apt instanll nano
+   75  export EDITOR='nano'
+   76  kubectl -n kubernetes-dashboard edit svc kubernetes-dashboard
+   77  clear
+   78  kubectl -n kubernetes-dashboard get svc -o wide
+   79  kubectl get nodes -o wide
+   80  kubectl -n kubernetes-dashboard get secrets  
+   81  kubectl -n kubernetes-dashboard get sa   
+   82  kubectl -n kubernetes-dashboard describe sa kubernetes-dashboard | grep Token
+   83  kubectl -n kubernetes-dashboard describe secret kubernetes-dashboard-token-x2gtz
+   84  kubectl -n kubernetes-dashboard get clusterroles.rbac.authorization.k8s.io  | grep dashboard
+   85  clear
+   86  kubectl -n kubernetes-dashboard get clusterroles.rbac.authorization.k8s.io  | grep dashboard
+   87  kubectl -n kubernetes-dashboard describe clusterroles.rbac.authorization.k8s.io kubernetes-dashboard
+   88  kubectl -n kubernetes-dashboard delete clusterrole kubernetes-dashboard
+   89  kubectl -n kubernetes-dashboard delete clusterrolebinding kubernetes-dashboard
+   90  kubectl -n kubernetes-dashboard describe clusterrolebindings.rbac.authorization.k8s.io kubernetes-dashboard
+   91  kubectl -n kubernetes-dashboard create clusterrole kubernetes-dashboard --verb='*' --resource='*.*,*.apps,*.batch'
+   92  kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=kubernetes-dashboard --serviceaccount=kubernetes-dashboard:kubernetes-dashboard
+   93  kubectl -n kubernetes-dashboard get secrets  
+   94  kubectl -n kubernetes-dashboard get sa
+   95  kubectl -n kubernetes-dashboard describe sa kubernetes-dashboard | grep Token
+   96  kubectl get deployment nginx --image=nginx -o yaml > test1.yaml
+   97  kubectl create  deployment nginx --image=nginx -o yaml > test1.yaml
+   98  kubectl get all
+   99  kubectl scale deployment nginx --replicas=50
+  100  kubectl get all
+  101  kubectl scale deployment nginx --replicas=10
+  102  kubectl get all
+  103  kubectl -n kubernetes-dashboard describe sa kubernetes-dashboard | grep Token
+  104  kubectl -n kubernetes-dashboard describe secret kubernetes-dashboard-token-x2gtz
+  105  java --version
+  106  kubectl get nodes
+  107  minikube status
+  108  kubectl get nodes
+  109  kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.4
+  110  kubectl get deployments
+  111  kubectl expose deployment hello-minikube --type=NodePort --port=8080
+  112  minikube service hello-minikube --url
+  113  ipconfig
+  114  ip addr
+  115  kubectl port-forward service/hello-minikube 7080:8080
+  116  kubectl delete services hello-minikube
+  117  kubectl get pods
+  118  docker run python-app
+  119  kubectl run nginx --image nginx
+  120  kubectl get pods
+  121  clear
+  122  kubect l get po
+  123  kubectl run nginx --image=nginx
+  124  kubectl get pods
+  125  kubectl describe pod nginx
+  126  kubectl get pods -o wide
+  127  clear
+  128  pwd
+  129  cd /home/ubuntu/yaml/
+  130  touch pod.yaml
+  131  sudo nano pod.yaml 
+  132  cat pod.yaml 
+  133  clear
+  134  kubectl apply -f pod.yaml
+  135  kubectl get pods
+  136  kubectl create -f pod.yaml
+  137  kubectl get pods
+  138  kubectl delete -n default pod nginx 
+  139  kubectl get pods
+  140  kubectl create -f pod.yaml
+  141  kubectl describe pod nginx
+  142  cat pod.yaml 
+  143  cat nginx.yaml 
+  144  ls
+  145  ll
+  146  mv nginx.yaml /home/ubuntu/chap1pods
+  147  mv pod.yaml /home/ubuntu/chap1pods
+  148  cat repli
+  149  cd /home/ubuntu/yaml/chap2replicasets/
+  150  cat replicaset.yaml 
+  151  ll
+  152  cd /home/ubuntu/yaml/chap2replicasets/
+  153  cat replicaset.yaml 
+  154  clear
+  155  kubectl create -f replicaset.yaml
+  156  ll
+  157  kubectl create -f replicaset.yaml
+  158  kubectl get replicaset.yaml 
+  159  kubectl get replicaset
+  160  clear kubectl get pods
+  161  kubectl delete pod myapp-replicaset-58f49b7545-gc6tb 
+  162  kubectl describe replicaset myapp-replicaset
+  163  clear 
+  164  cp "/home/ubuntu/yaml/chap1pods/nginx.yaml" /home/ubuntu/yaml/chap2replicasets/
+  165  clear
+  166  kubectl get pods
+  167  kubectl create -f nginx.yaml
+  168  kubectl --version
+  169  kubectl api-versions 
+  170  kubectl whoami
+  171  cd /home/ubuntu/yaml/chap2replicasets/
+  172  ll
+  173  nano nginx.yaml 
+  174  kubectl create -f nginx.yaml
+  175  clear
+  176  kubectl get pods
+  177  kubectl edit replicaset myapp-replicaset
+  178  kubectl get pods
+  179  kubectl edit replicaset myapp-replicaset
+  180  kubectl edit replicaset myapp-replicaset-58f49b7545
+  181  kubectl get pods
+  182  kubectl edit replicaset myapp-replicaset-58f49b7545
+  183  kubectl scale replicaset 
+  184  myapp-replicaset-58f49b7545kubectl scale replicaset 
+  185  kubectl scale replicaset 
+  186  kubectl scale replicaset --replicase = 2 
+  187  kubectl scale replicaset --replicas = 2 
+  188  kubectl scale replicaset --replicas=2 
+  189  kubectl scale replicaset myapp-replicaset-58f49b7545  --replicas=2
+  190  kubectl version
+  191  sudo apt-get install -y kubelet kubeadm kubectl 
+  192  kubectl  version
+  193  clear
+  194  sudo apt-get install -y kubelet kubeadm kubectl 
+  195  kubectl cluster-info
+  196  'kubectl cluster-info dump
+  197  kubectl cluster-info dump
+  198  kubectl cluster-info
+  199  kubectl get nodes
+  200  kubectl get pods
+  201  k get no
+  202  kubectl get nodes
+  203  sudo apt update
+  204  cd ..
+  205  ll
+  206  mkdir chap3service
+  207  cd /home/ubuntu/yaml/chap3service/
+  208  ls
+  209  ll
+  210  kubectl get deployment
+  211  kubectl get pods
+  212  touch service-definition.yaml
+  213  nano service-definition.yaml 
+  214  sudo nano service-definition.yaml 
+  215  cat service-definition.yaml 
+  216  kubectl create -f service-definition.yaml 
+  217  kubectl get svc
+  218  minikube
+  219  weavenet
+  220  kubectl get services
+  221  cd /home/ubuntu/yaml/
+  222  mkdir project
+  223  cd /home/ubuntu/yaml/project/
+  224  touch voting-app-pod.yaml
+  225  sudo nano voting-app-pod.yaml 
+  226  sudo touch result-app-pod.yaml
+  227  sudo nano voting-app-pod.yaml 
+  228  sudo nano result-app-pod.yaml 
+  229  sudo touch redis-pod.yaml
+  230  sudo nano redis-pod.yaml 
+  231  touch postgres-pod.yaml
+  232  sudo nano postgres-pod.yaml 
+  233  touch worker-app-pod.yaml
+  234  sudo nano  worker-app-pod.yaml
+  235  nano redis-service.yaml
+  236  cat redis-pod.yaml 
+  237  nano redis-service.yaml
+  238  nano postgres-service.yaml
+  239  cat postgres-service.yaml 
+  240  exit
+  241  kubectl get nodes
+  242  sudo apt-cache madison kubeadm
+  243  sudo apt-mark unhold kubeadm
+  244  sudo apt update && sudo apt install -y kubeadm=1.22.2-00
+  245  sudo apt-mark hold kubeadm
+  246  sudo kubeadm upgrade plan
+  247  kubectl -n kube-system get cm kubeadm-config -o yaml
+  248  sudo kubeadm upgrade apply v1.22.2
+  249  kubectl get nodes
+  250  kubectl get  replicasets.apps
+  251  kubectl describe replicaset myapp-replicaset-58f49b7545
+  252  curl http://192.168.108.130
+  253  curl http://192.168.108.129
+  254  cd /home/ubuntu/yaml/project/
+  255  nano redis-pod.yaml 
+  256  touch voting-app-service.yaml
+  257  chmod 777 voting-app-service.yaml 
+  258  touch result-app-service.yaml
+  259  chmod 777 result-app-service.yaml 
+  260  clear
+  261  kubectl get pods
+  262  kubectl delete -n default pod myapp-replicaset-58f49b7545-jfk88 
+  263  kubectl get pods
+  264  kubectl get svc
+  265  clear
+  266  kubectl create -f voting-app-pod.yaml 
+  267  kubectl create -f voting-app-service.yaml 
+  268  sudo nano voting-app-pod.yaml 
+  269  kubectl get pods
+  270  kubectl get pods, svc
+  271  kubectl get pods,svc
+  272  kubectl create -f voting-app-pod.yaml 
+  273  kubectl create -f voting-app-service.yaml 
+  274  chmod 777 voting-app-pod.yaml 
+  275  kubectl create -f voting-app-pod.yaml 
+  276  kubectl create -f voting-app-service.yaml 
+  277  kubectl create redis-pod.yaml 
+  278  kubectl create  -f redis-pod.yaml
+  279  kubectl create -f redis-service.yaml 
+  280  kubectl get pods,svc
+  281  kubectl create -f postgres-pod.yaml
+  282  kubectl create -f postgres-service.yaml 
+  283  kubectl create -f worker-app-pod.yaml 
+  284  kubectl get pods,svc
+  285  chmod 777 worker-app-pod.yaml 
+  286  kubectl create -f worker-app-pod.yaml
+  287  kubectl get pods,svc
+  288  kubectl create -f result-app-pod.yaml 
+  289  kubectl create -f result-app-service.yaml 
+  290  kubectl get pods,svc
+  291  Kubectl describe pod worker-app-pod 
+  292  kubectl  describe pod worker-app-pod 
+  293  kubectl get pods,svc
+  294  kubectl get nodes
+  295  sudo apt update
+  296  sudo apt-cache madison kubeadm
+  297  sudo apt-get install -y kubeadm=1.22.2-00
+  298  sudo apt-mark hold kubeadm
+  299  kubeadm version
+  300  clear
+  301  kubectl drain k8smaster --ignore-daemonsets
+  302  kubectl drain kmaster --ignore-daemonsets
+  303  kubeadm version
+  304  sudo kubeadm upgrade plan
+  305  kubeadm version -o json
+  306  yum remove -y kubeadm-1.22.2-0 --disableexcludes=kubernetes
+  307  sudo  remove -y kubeadm-1.22.2-0 --disableexcludes=kubernetes
+  308  sudo apt  remove -y kubeadm-1.22.2-0 --disableexcludes=kubernetes
+  309  kubeadm reset
+  310  sudo apt-get purge kubeadm kubectl kubelet kubernetes-cni kube* 
+  311  sudo apt-get autoremove  
+  312  sudo rm -rf ~/.kube
+  313  kubeadm version
+  314  sudo apt-cache madison kubeadm
+  315  kubeadm version -o json
+  316  sudo reboot
+  317  cd 
+  318  kubectl get nodes
+  319  kubectl get pods
+  320  kubectl create deployment deploy --image=nginx
+  321  watch kubectl get all
+  322  ubuntu
+  323  kubectl get nodes
+  324  watch kubectl get nodes
+  325  watch kubectl get all 
+  326  sudo su 
+  327  kubectl get nodes
+  328  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  329  kubectl get nodes
+  330  sudo su
+  331  sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+  332  sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+  333  cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+  334  deb https://apt.kubernetes.io/ kubernetes-xenial main
+  335  EOF
+  336  sudo apt-get update
+  337  sudo apt-cache policy kubeadm | grep 1.22
+  338  sudo apt-get install -y kubelet=1.22.2-00 kubeadm=1.22.2-00 kubectl=1.22.2-00
+  339  sudo apt-mark hold kubelet kubeadm kubectl
+  340  reboot
+  341  kubectl cluster-info
+  342  kubectl get nodes
+  343  sudo timedatectl list-timezones
+  344  sudo timedatectl set-timezone America/New_York
+  345  reboot
+  346  cd
+  347  nano /etc/hosts
+  348  nano /etc/hostname
+  349  sudo kubeadm init
+  350  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  351  sudo ufw allow 1:9999/tcp
+  352  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  353  kubectl cluster-info
+  354  mkdir -p $HOME/.kube
+  355  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  356  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  357  kubectl cluster-info
+  358  kubectl get nodes
+  359  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  360  kubectl get nodes
+  361  kubectl get all
+  362  kubectl get nopdes -o wide
+  363  kubectl get nodes -o wide
+  364  clear
+  365  cd 
+  366  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.4.0/aio/deploy/recommended.yaml
+  367  kubectl get ns
+  368  echo $EDITOR
+  369  export EDITOR='nano'
+  370  echo $EDITOR
+  371  kubectl -n kubernetes-dashboard edit svc kubernetes-dashboard
+  372  kubectl get nodes -o wide
+  373  kubectl -n kubernetes-dashboard get secrets 
+  374  kubectl -n kubernetes-dashboard get sa
+  375  ubectl -n kubernetes-dashboard describe sa kubernetes-dashboard | grep Token
+  376  kubectl -n kubernetes-dashboard describe sa kubernetes-dashboard | grep Token
+  377  kubectl -n kubernetes-dashboard describe secret kubernetes-dashboard-token-s46pt
+  378  kubectl -n kubernetes-dashboard get clusterroles.rbac.authorization.k8s.io  | grep dashboard
+  379  kubectl -n kubernetes-dashboard describe clusterroles.rbac.authorization.k8s.io kubernetes-dashboard
+  380  kubectl -n kubernetes-dashboard get clusterrolebindings.rbac.authorization.k8s.io  | grep dashboard
+  381  kubectl -n kubernetes-dashboard describe clusterrolebindings.rbac.authorization.k8s.io kubernetes-dashboard
+  382  kubectl -n kubernetes-dashboard delete clusterrole kubernetes-dashboard
+  383  kubectl -n kubernetes-dashboard delete clusterrolebinding kubernetes-dashboard
+  384  kubectl -n kubernetes-dashboard create clusterrole kubernetes-dashboard --verb='*' --resource='*.*,*.apps,*.batch'
+  385  kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=kubernetes-dashboard --serviceaccount=kubernetes-dashboard:kubernetes-dashboard
+  386  kubectl get deployment nginx --image=nginx -o yaml > test1.yaml
+  387  kubectl create  deployment nginx --image=nginx -o yaml > test1.yaml
+  388  kubectl get pods
+  389  kubectl get all
+  390  kubectl scale deployment nginx --replicas=50
+  391  kubectl get all
+  392  route
+  393  kubectl get csr
+  394  ip link 
+  395  kubectl version
+  396  kubectl get nodes
+  397  etcd
+  398  ./etcd
+  399  kubectl get pods -n kube-system
+  400  kubectl get nodes
+  401  ps aux
+  402  ps aux | grep kubectl
+  403  kubectl get pods -n kube-system
+  404  kubectl get daemonset -n kube-system
+  405  kubectl get pods 
+  406  clear
+  407  kubetcl get pods 
+  408  kubectl get pods 
+  409  cd ..
+  410  clear
+  411  kubectl delete --all pods
+  412  clear
+  413  touch pod.yaml
+  414  cd /home/ubuntu/
+  415  cd /home/ubuntu/yaml/chap1pods/
+  416  ll
+  417  sudo touch pod.yaml
+  418  chmod 777 pod.yaml
+  419  cat pod.yaml 
+  420  clear
+  421  kubectl create -f pod.yaml 
+  422  kubectl get pods
+  423  touch rc-definition.yml
+  424  chmod 777 rc-definition.yml 
+  425  car rc-definition.yml 
+  426  cat rc-definition.yml 
+  427  kubectl create -f rc-definition.yml 
+  428  clear
+  429  kubectl create -f rc-definition.yml 
+  430  kubectl get replicationcontroller
+  431  kubectl get pods
+  432  touch replicaset-definition.yml
+  433  chmod 777 replicaset-definition.yml 
+  434  kubectl create -f replicaset-definition.yml 
+  435  kubectl get replicaset 
+  436  clear
+  437  kubectl get pods
+  438  kubectl get all
+  439  kubectl run
+  440  kubectl run nginx --image=nginx --dry-run=client -o yaml
+  441  kubectl describe node kubemaster | grep Taint
+  442  kubectl describe node kmaster | grep Taint
+  443  kubectl describe node knode1  | grep Taint
+  444  docker ps
+  445  clear
+  446  docker ps | grep image 
+  447  docker ps
+  448  kubectl get pods
+  449  kubectl get events
+  450  clear
+  451  cd
+  452  kubectl get pods
+  453  minikube addons enable metric-server
+  454  git clone https://github.com/kubernetes-incubator/metrics-serve
+  455  git clone https://github.com/kubernetes-sigs/metrics-server.git
+  456  pwd
+  457  cd /home/ubuntu/metrics-server/
+  458  clear
+  459  cd
+  460  kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  461  kubectl top node
+  462  kubectl top pod
+  463  kubectl edit deployment.apps -n kube-system mertrics-server
+  464  kubectl edit deployment.apps -n kube-system metrics-server
+  465  kubectl top nodes
+  466  reboot
+  467  kubectl get nodes
+  468  kubectl get pods
+  469  kubectl get nodes
+  470  ip link
+  471  clear
+  472  cd ..
+  473  cd 
+  474  route
+  475  cat /proc/sys/net/ipv4/ip_forward
+  476  ping db
+  477  ping knode1
+  478  cat /etc/hosts
+  479  ping 192.168.108.130
+  480  kubectl get pods
+  481  docker network ls
+  482  ip netns
+  483  ip addr
+  484  clear
+  485  docker ps
+  486  docker image
+  487  docker image ls
+  488  echo $SSH_CONNECTION
+  489  echo $SHELL
+  490  echo $PWD
+  491  exit
+  492  ll
+  493  clear
+  494  ls
+  495  pwd
+  496  find .kube
+  497  cd .kube/config
+  498  kubectl descripe pods
+  499  kubectl describe pods
+  500  clear
+  501  kubectl config get-location
+  502  kubectl config -h'
+  503  kubectl config -h
+  504  eyJhbGciOiJSUzI1NiIsImtpZCI6ImFQUVhOelpHb29EQ3FVUlI1cjdDMmZTUGk3STJPZUZvcUs5S0Y5TF9VaFEifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJrdWJlcm5ldGVzLWRhc2hib2FyZC10b2tlbi1zNDZwdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjJiYzk0OGVjLTczMTUtNGFhYS04MjVhLTAxOWFkNDc0MWVhNCIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlcm5ldGVzLWRhc2hib2FyZDprdWJlcm5ldGVzLWRhc2hib2FyZCJ9.hgCPiZ_kOiK-axwbdyVFQfJfabEO902v66Bdcno8aC9nE-aihzTgSTFLHa3xKq1YjjrPfVdgL4eGKETaWQpzSuCCKNDUyKMnBNG-gsW0SjasPaOxWRFVl0nr23RbcUXUnPsaYudlU0aYOF4vMU0aIILBTMW6A3W0Kwj-VwZIM7YJB2W9tAA_od4dEPbyS1tkuQJw3SLsOEBPWXfHbRNP8Xnuvo0ctSTMUrttFyBgjWt_Gx--_DREBnXJApFc8mICpoblmtiuSmkJTGtnccipF3jaiTuaCLtzvgbzDcbm1SLz0RnL_lN9nrQbsKVN-_mbyCDv-s40EqlbjqE97o3V_g
+  505  clear
+  506  ls .kube/
+  507  cat .kube/config
+  508  clear
+  509  kubectl get pods
+  510  ip a
+  511  clear
+  512  cat .kube/config
+  513  clear
+  514  cd  .kube/config
+  515  cat .kube/config
+  516  cd ./kube
+  517  ls ./kube
+  518  ls .kube/
+  519  cd .kube/
+  520  ll
+  521  cd config
+  522  pws
+  523  pwd
+  524  ll
+  525  cat config 
+  526  clear
+  527  cat config > /home/ubuntu/Downloads/config
+  528  clear
+  529  cd 
+  530  ssh  192.168.108.133
+  531  ip a
+  532  exit
+  533  sudo ufw allow 1:9999/tcp
+  534  clear
+  535  ssh 192.168.108.133
+  536  service ssh start
+  537  ifconfig -a
+  538  clear
+  539  cd .kube/
+  540  ll
+  541  cat config
+  542  clear
+  543  kubectl get svc
+  544  kubectl get pods
+  545  kubectl get nodes
+  546  ssh ubuntu@192.168.108.159
+  547  git branch
+  548  cd 
+  549  kubectl get pods
+  550  kubectl get pods --all-namespaces
+  551  clear
+  552  kubectl get pods --all-namespaces
+  553  kubectl get nodes
+  554  kubectl get rc
+  555  kubectl get svc
+  556  kubectl get pods --all-namespaces
+  557  cat /etc/*release*
+  558  kubectl get all -svcs
+  559  kubectl get svcs
+  560  kubectl get pods
+  561  history
+  562  kubectl describe node knode1  | grep Taint
+  563  kubectl get nodes
+  564  ubuntu
+  565  cd 
+  566  kubectl get nodes
+  567  kubectl get node -o wide
+  568  kubectl get pods -A
+  569  kubeadm init
+  570  kubectl get pods
+  571  clear
+  572  kubectl --help
+  573  cd 
+  574  clear
+  575  kubectl run webapp --image=mylandmarktech/hello --port=80
+  576  get pods
+  577  kubectl get pods
+  578  kubectl delete pod webapp
+  579  kubectl get service
+  580  kubectl expose pod webapp --port=80 --type=NodePort
+  581  kubectl run webapp --image=mylandmarktech/hello --port=80
+  582  kubectl expose pod webapp --port=80 --type=NodePort
+  583  kubectl get service
+  584  kubectl get ep
+  585  kubectl get pod-o wide
+  586  kubectl get pod -o wide
+  587  curl -v localhost
+  588  ip a
+  589  kubectl get nodes
+  590  df -h 
+  591  kubectl get events
+  592  clear
+  593  kubectl get events
+  594  clear
+  595  ping localhost
+  596  ip a | grep 192
+  597  kubectl api-resources
+  598  kubectl api-resources | ass
+  599  kubectl api-resources | grep ass
+  600  kubectl api-resources | grep pod
+  601  alias k =kubectl
+  602  alias k=kubectl
+  603  k get pod
+  604  kubectl get ns
+  605  kubectl get nodes
+  606  kubectl create namespace dev
+  607  kubectl create namespace test
+  608  kubectl get ns
+  609  cd /home/ubuntu/landmark/
+  610  kubectl apply -f pod.yml
+  611  kubectl get pods
+  612  kubectl get pod -o wirde
+  613  kubectl get pod -o wide
+  614  kubectl get pod -n test
+  615  kubectl get pods
+  616  kubectl get event -n test
+  617  kubectl get node -o wide
+  618  cd 
+  619  kubectl get node -o wide
+  620  kubectl get ep
+  621  kubectl get service
+  622  kube get pod -o yml
+  623  kubextl  get pod -o yml
+  624  kubextl  get pod -o yaml
+  625  kubectl get pod -o yaml
+  626  kubectl get nodes
+  627  clear
+  628  kubectl run app --image=mylandmarktech/java-web-app --port=8080
+  629  kubectl get all
+  630  clear
+  631  kubectl get all
+  632  kubectl get pods
+  633  kubectl describe pod app
+  634  kubectl get pod -o wide
+  635  clear
+  636  kubectl describe pod app
+  637  kubectl apply -f pod.yml --dry-run=client 
+  638  cd /home/ubuntu/landmark/
+  639  cd ..
+  640  kubectl apply -f pod.yml --dry-run=client 
+  641  ll
+  642  kubectl apply  --dry-run=client 
+  643  kubectl apply -f /home/ubuntu/landmark/pod.yml --dry-run=client 
+  644  kubectl get ns
+  645  kubectl get pods
+  646  kubectl get pod -n test
+  647  kubectl get pod -n default
+  648  kubectl get pod -n dev
+  649  kubectl get pods --show -labels
+  650  kubectl get pods --showl-labels
+  651  cd ..
+  652  kubectl get pods 
+  653  kubectl get pods --show-labels
+  654  clear
+  655  cd..
+  656  cxd ..
+  657  cd ..
+  658  cat .kube/config
+  659  %USERPROFILE%\.kube\config
+  660  cat ~/.kube/config
+  661  cat /.kube/config
+  662  cat ~/.kube/config
+  663  clear
+  664  cat ~/.kube/config
+  665  clear
+  666  kubectl config set-context --current --namespace=test
+  667  kubectl config set-context --current --namespace=default
+  668  cd /home/ubuntu/landmark/
+  669  kubectl apply -f /home/ubuntu/landmark/app.yml 
+  670  kubectl get pods
+  671  kubectl get events
+  672  kubectl get event
+  673  kubectl config set-context --current --namespace=default
+  674  cd /home/ubuntu/landmark/
+  675  ll
+  676  mv  pod.yml /pods
+  677  mv  app.yml /pods
+  678  cd /pods
+  679  cd /home/
+  680  ll
+  681  mv pod.yaml /home/ubuntu/pods
+  682  kubectl apply -f service.yaml
+  683  cd /home/ubuntu/landmark/2_service/
+  684  ll
+  685  kubectl apply -f /home/ubuntu/landmark/2_service/service.yaml
+  686  clear
+  687  kubectl apply -f /home/ubuntu/landmark/2_service/service.yaml
+  688  clear
+  689  cd /home/ubuntu/landmark/1_pods/
+  690  ll
+  691  kubectl apply -f /home/ubuntu/landmark/1_pods/app.yml
+  692  ll
+  693  kubectl  apply -f pod.yml 
+  694  get pods
+  695  kubectl get pods
+  696  kubectl delete pod app
+  697  kubectl  apply -f pod.yml 
+  698  cd /home/ubuntu/landmark/2_service/
+  699  clear
+  700  kubectl  apply -f service.yaml
+  701  kubectl get pods
+  702  kubectl get service
+  703  kubectl get pods
+  704  kubectl get service
+  705  kubectl get service -o wide
+  706  kubectl describe service myappsvc
+  707  kubectl get pod -o wide
+  708  kubectl get pod -n test
+  709  kubectl delete pod myapp myapp1
+  710  kubectl delete pod myapp 
+  711  kubectl delete pod myapp1
+  712  kubectl delete pod -n test  myapp1
+  713  kubectl delete pod -n test  myapp
+  714  kubectl  apply -f service.yaml
+  715  kubectl get pod 
+  716  kubectl get pod -o wide
+  717  kubectl get events
+  718  kubectl get events -n test
+  719  ll
+  720  kubectl  apply -f nodeport-svc.yml 
+  721  kubectl get pods
+  722  kubectl get pod
+  723  kubectl describe pod webapp1
+  724  kubectl get ep
+  725  kubectl get pod
+  726  clear
+  727  kubectl get secret
+  728  kubectl apply -f nodeport-svc.yml
+  729  kubectl get pods
+  730  kubectl delete pods webapp1
+  731  kubectl apply -f nodeport-svc.yml
+  732  kubectl get po
+  733  kubectl apply -f nodeport-svc.yml
+  734  kubectl get pods
+  735  kubectl delete pods webapp1
+  736  kubectl apply -f nodeport-svc.yml
+  737  kubectl get pods
+  738  kubectl delete pods webapp1
+  739  kubectl apply -f nodeport-svc.yml
+  740  kubectl get pods
+  741  kubectl delete pods webapp1
+  742  kubectl apply -f nodeport-svc.yml
+  743  kubectl get pods
+  744  kubectl get svc
+  745  kubectl get ep
+  746  kubectl get pod
+  747  kubectl delete pods webapp
+  748  kubectl delete pods webapp1
+  749  kubectl apply -f nodeport-svc.yml
+  750  kubectl delete pods webapp1
+  751  kubectl apply -f nodeport-svc.yml
+  752  kubectl get pod
+  753  kubectl get all
+  754  kubectl get ep 
+  755  cd /home/ubuntu/
+  756  git clone https://github.com/LandmakTechnology/nodejs-application.git
+  757  cd /home/ubuntu/nodejs-application/
+  758  npm install
+  759  apt install npm
+  760  df -h 
+  761  clear
+  762  df -h
+  763  clear
+  764  docker build  -t nodejsapp:1 .
+  765  docker login -u tolu2618
+  766  npm audit fix
+  767  docker images
+  768  docker push nodejsapp:1
+  769  docker logout
+  770  docker login 
+  771  docker push nodejsapp:1
+  772  docker tag mynodejsapps_commit:1 tolu2618/nodejsapp:1
+  773  docker tag nodejsapp:1 tolu2618/nodejsapp:1
+  774  docker push nodejsapp:1
+  775  docker push tolu2618/nodejsapp:1
+  776  kubectl get secrets
+  777  df -h 
+  778  cd /home/ubuntu/landmark/3_Replication_Controller/
+  779  kubectl apply -f rc.yml 
+  780  kubectl get pods
+  781  kubectl get pod
+  782  kubectl get all
+  783  cleatr
+  784  clear
+  785  kubectl get nodes
+  786  kubectl get pods
+  787  kubectl delete -n default pod apprc-grckt
+  788  kubectl delete -n default pod apprc-jqd8d
+  789  kubectl delete -n default pod services
+  790  kubectl delete -n default pod service
+  791  kubectl delete -n default replicationcontroller apprc
+  792  kubectl get pods
+  793  kubectl apply -f rc.yml 
+  794  kubectl get pods
+  795  kubectl get all
+  796  clear
+  797  k get po -o wide
+  798  cd ~
+  799  kubectl get ep -o wide
+  800  kubectl apply -f rc.yml 
+  801  cd /home/ubuntu/landmark/3_Replication_Controller/
+  802  kubectl apply -f rc.yml 
+  803  kubectl get pods
+  804  cd ..
+  805  cd ~
+  806  kubectl get ep
+  807  kubectl get pod -o wide
+  808  kubectl get service
+  809  kubectl get rc
+  810  kubectl get rs
+  811  kubectl get rc -o wide
+  812  kubectl describe ReplicationController apprc
+  813  clear
+  814  history
+  815  clear
+  816  kubectl scale --replicas=4 rc apprc
+  817  kubectl get rc
+  818  kubectl get ep 
+  819  kubectl scale --replicas=0 rc apprc
+  820  kubectl scale --replicas=1 rc apprc
+  821  cd /home/ubuntu/landmark/3_Replication_Controller/
+  822  kubectl apply -f rs.yml
+  823  kubectl get nodes
+  824  sudo apt update
+  825  sudo apt-mark unhold kubeadm
+  826  sudo apt update && sudo apt install -y kubeadm=1.24.2-00
+  827  ps -a 
+  828  sudo apt update && sudo apt install -y kubeadm=1.24.2-00
+  829  kubectl get nodes
+  830  docker image pull portainer/portainer
+  831  docker image ls
+  832  docker volume create portainer_data
+  833  docker container run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
+  834  curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+  835  chmod 700 get_helm.sh
+  836  ./get_helm.sh
+  837  helm
+  838  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  839  helm repo add apm https://charts.helm.sh/stable
+  840  helm repo add stable  https://charts.helm.sh/stable
+  841  helm repo ls
+  842  helm search repo
+  843  helm search repo | grep prometheus
+  844  helm search repo prometheus-community
+  845  helm install  prometheus-communtiy prometheus-communtiy/kube-prometheus-stack
+  846  helm install prometheus-communtiy prometheus-communtiy/kube-prometheus-stack
+  847  helm install prometheus-communtiy prometheus-community/kube-prometheus-stack
+  848  kubectl --namespace default get pods -l "release=prometheus-communtiy
+  849  kubectl get pods
+  850  kubectl get service
+  851  kubectl edit svc prometheus-communtiy-kube-prometheus
+  852  kubectl edit svc prometheus-communtiy-grafana
+  853  k get svc
+  854  kubectl get svc
+  855  free -m
+  856  df -h
+  857  ifconfig
+  858  hostnamectl
+  859  kubectl get sc
+  860  ip a
+  861  cd /home/ubuntu/.kube/
+  862  ll
+  863  cat config
+  864  clear
+  865  kubectl get pods
+  866  cat config
+  867  kubectl get pods
+  868  kubectl get svc
+  869  clear
+  870  helm
+  871  clear
+  872  helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+  873  helm install k8s_dashboard kubernetes-dashboard/kubernetes-dashboard
+  874  helm install k8sdashboard kubernetes-dashboard/kubernetes-dashboard
+  875  kubectl edit svc k8sdashboard-kubernetes-dashboard
+  876  export EDITOR='nano' 
+  877  kubectl get svc
+  878  kubectl edit svc k8sdashboard-kubernetes-dashboard
+  879  kubectl get sa
+  880  kubectl describe sa k8sdashboard-kubernetes-dashboard 
+  881  kubectl describe secret k8sdashboard-kubernetes-dashboard-token-mqdg4
+  882  kubectl create -f /home/ubuntu/dashboard.yml
+  883  kubectl -n kube-system get sa
+  884  kubectl -n kube-system describe sa dashboard-admin
+  885  kubectl -n kube-system describe secret dashboard-admin-token-5j6vl
+  886  df -h 
+  887  kubectl edit deployment kubernetes-dashboard -n kubernetes-dashboard
+  888  clear
+  889  kubectl get pods
+  890  clear
+  891  kubectl get nodes
+  892  history
+  893  ngrok http
+  894  cd /home/ubuntu/ngrok/
+  895  ngrok http 80
+  896  ./ ngrok http 80
+  897  ./ngrok http 8080
+  898  ./ngrok https 31055
+  899  ./ngrok http 31055
+  900  docker images
+  901  df -h
+  902  docker image pull portainer/portainer
+  903  docker volume create portainer_data
+  904  docker container run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
+  905  cd ..
+  906  cd ~
+  907  kubectl get nodes
+  908  kubectl get pods
+  909  ps
+  910  top
+  911  clear
+  912  kubect get deployments
+  913  kubectl get deployments
+  914  kubectl describe deployment springappdeployment
+  915  kubectl get all
+  916  kubectl create -f "/home/ubuntu/yaml/chap2replicasets/deployment.yml"
+  917  clear
+  918  kubectl get deployments
+  919  kubectl get pods
+  920  kubectl describe deployment myapp-deployment
+  921  kubectl describe deployment myapp-deploymnet
+  922  clear
+  923  kubectl get all
+  924  clear
+  925  kubectl get deployments
+  926  kubectl rollout status deployment/myapp-deploymnet
+  927  kubectl rollout status deployment/springappdeployment
+  928  kubectl rollout status deployment/prometheus-communtiy-kube-state-metrics 
+  929  kubectl rollout history deployment/
+  930  kubectl rollout history deployment/springappdeployment
+  931  kubectl rollout history deployment/prometheus-communtiy-grafana 
+  932  kubectl get replicaset
+  933  kubectl get pods
+  934  clear
+  935  kubectl rollout status deployment.apps/myapp-deploymnet
+  936  clear
+  937  kubectl delete -n default deployment myapp-deploymnet
+  938  kubectl create -f "/home/ubuntu/yaml/chap2replicasets/deployment.yml"
+  939  kubectl rollout status deployment.apps/myapp-deploymnet
+  940  kubectl rollout history  deployment.apps/myapp-deploymnet
+  941  kubectl get pods
+  942  kubectl get nodes
+  943  kubectl create -f "/home/ubuntu/yaml/chap2replicasets/deployment.yml" --record
+  944  kubectl rollout history  deployment.apps/myapp-deploymnet
+  945  kubectl describe deployment myapp-deploymnet
+  946  kubectl edit deployment myapp-deploymnet --record
+  947  history
+  948  history >> /home/ubuntu/yaml/chap2replicasets/history.txt
+  949  export EDITOR='nano'
+  950  echo $EDITOR
+  951  kubectl edit deployment myapp-deploymnet --record
+  952  kubectl rollout status deployment.apps/myapp-deploymnet
+  953  kubectl describe kubectl describe deployment myapp-deploymnet
+  954  kubectl describe  deployment myapp-deploymnet
+  955  kubectl edit deployment myapp-deploymnet --record
+  956  kubectl set image deployment myapp-deploymnet nginx=nginx:1.18.perl
+  957  kubectl rollout status deployment.apps/myapp-deploymnet
+  958  kubectl set image deployment myapp-deploymnet nginx=nginx:1.18-perl --record
+  959  kubectl rollout status deployment.apps/myapp-deploymnet
+  960  kubectl rollout history  deployment.apps/myapp-deploymnet
+  961  kubectl get pods
+  962  kubectl rollout history  deployment.apps/myapp-deploymnet
+  963  kubectl rollout undo deployment/myapp-deploymnet
+  964  kubectl rollout history  deployment.apps/myapp-deploymnet
+  965  kubectl rollout undo deployment/myapp-deploymnet
+  966  kubectl create -f "/home/ubuntu/yaml/chap2replicasets/deployment.yml" --record
+  967  kubectl rollout history  deployment.apps/myapp-deploymnet
+  968  kubectl edit deployment myapp-deploymnet --record
+  969  kubectl get deployments 
+  970  kubectl edit deployment kubernetes-dashboard -n kubernetes-dashboard
+  971  clear
+  972  cd /home/ubuntu/kodekloud/votingapp/
+  973  clear
+  974  kubectl get pods
+  975  clear
+  976  kubectl get svc
+  977  kubectl create -f voting-app-pod.yml 
+  978  kubectl create -f voting-app-service.yml 
+  979  kubeadm service voting-service --url
+  980  kubectl create -f redis-pod.yaml 
+  981  kubectl create -f redis-service.yml 
+  982  kubectl create -f postgres-pod.yaml 
+  983  kubectl create -f postgres-service.yml 
+  984  kubectl create -f worker-app-pod.yaml 
+  985  kubectl create -f result-app-pod.yml 
+  986  kubectl create -f result-app-service.yml 
+  987  kubectl get svc
+  988  clear
+  989  history >> deploy.txt 
